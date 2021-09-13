@@ -9,7 +9,7 @@ public class UserDao {
         UserDao dao = new UserDao();
 
         User user = new User();
-        user.setId("hana");
+        user.setId("hana1");
         user.setName("하나");
         user.setPassword("password");
 
@@ -23,9 +23,7 @@ public class UserDao {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/toby", "root", "1234");
+        Connection c = getConnection();
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id,name, password) values (?, ?, ?)");
 
@@ -38,9 +36,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/toby", "root", "1234");
+        Connection c = getConnection();
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id = ?");
         ps.setString(1, id);
@@ -56,5 +52,12 @@ public class UserDao {
         ps.close();
         c.close();
         return user;
+    }
+
+    public Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection c = DriverManager.getConnection(
+                "jdbc:mysql://localhost/toby", "root", "1234");
+        return c;
     }
 }
