@@ -4,11 +4,15 @@ import me.study.user.domain.User;
 
 import java.sql.*;
 
+/*
+* Dao 클래스는 사용자 데이터 액세스 작업을 위한 SQL을 생성하고, 이를 실행한다.
+* */
 public class UserDao {
     private ConnectionMaker connectionMaker;
 
-    public UserDao() {
-        connectionMaker = new DConnectionMaker();
+    // 생성자 파라미터를 이용해 외부에서 오브젝트를 주입받는다.(의존관계 생성)
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
@@ -41,22 +45,5 @@ public class UserDao {
         ps.close();
         c.close();
         return user;
-    }
-
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDao();
-
-        User user = new User();
-        user.setId("hana3");
-        user.setName("하나");
-        user.setPassword("password");
-
-        dao.add(user);
-        System.out.println(user.getId() + " 등록 성공");
-
-        User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
-        System.out.println(user2.getId() + " 조회 성공");
     }
 }
