@@ -32,6 +32,14 @@ public class UserDao {
         this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
     }
 
+    /*
+    * 수정자 메소드 DI 방식 사용을 위한 수정자 메소드
+    * */
+    public void setConnectionMaker(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
+    }
+
+
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection c = connectionMaker.makeConnection();
         PreparedStatement ps = c.prepareStatement(
