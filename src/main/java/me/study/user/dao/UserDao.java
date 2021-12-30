@@ -16,21 +16,8 @@ public class UserDao {
         this.connectionMaker = connectionMaker;
     }
 
-    // 의존관계 검색(DL)을 이용하는 생성자
-    public UserDao() {
-
-        /*
-        * 외부 컨테이너를 이용해 다이내믹하게 런타임 의존관계를 맺는다, 하지만 외부에서 주입되는 형태가 아닌 직접 요청하는 방식이다.
-        DaoFactory daoFactory = new DaoFactory();
-        this.connectionMaker = daoFactory.connectionMaker();
-        */
-
-        /*
-        * 위와 달리, 스프링 컨테이너를 이용하면 의존관계 검색을 통해 의존관계를 주입받게 된다.
-        * */
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
-    }
+    // setter 메소드를 이용한 주입 방식 적용을 위해 기본 생성자 수정
+    public UserDao() {}
 
     /*
     * 수정자 메소드 DI 방식 사용을 위한 수정자 메소드

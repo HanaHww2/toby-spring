@@ -16,7 +16,7 @@ public class UserDaoConnectionCountingTest {
 
         // 간단한 테스트 작업 수행
         User user = new User();
-        user.setId("test5");
+        user.setId("test1");
         user.setName("하나");
         user.setPassword("password");
 

@@ -13,10 +13,10 @@ public class UserDaoTest {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-        UserDao dao = context.getBean("userDao", UserDao.class); // 두번째 매개변수로 제네릭 타입을 이용한 반환 타입 지정
+        UserDao dao = context.getBean("userDao2", UserDao.class); // 두번째 매개변수로 제네릭 타입을 이용한 반환 타입 지정
 
         User user = new User();
-        user.setId("test5");
+        user.setId("test4");
         user.setName("하나");
         user.setPassword("password");
 
