@@ -2,7 +2,6 @@ package me.study.user.dao;
 
 import me.study.user.domain.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import java.sql.*;
 

@@ -16,7 +16,7 @@ public class UserDaoTest {
         UserDao dao = context.getBean("userDao2", UserDao.class); // 두번째 매개변수로 제네릭 타입을 이용한 반환 타입 지정
 
         User user = new User();
-        user.setId("test4");
+        user.setId("test12");
         user.setName("하나");
         user.setPassword("password");
 
@@ -24,9 +24,17 @@ public class UserDaoTest {
         System.out.println(user.getId() + " 등록 성공");
 
         User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getPassword());
-        System.out.println(user2.getId() + " 조회 성공");
+
+        // 테스트 결과의 검증을 자동화하는 코드로 수정한다.
+        if (!user.getName().equals(user2.getName())) {
+            System.out.println("테스트 실패 (name)");
+        }
+        else if (!user.getPassword().equals(user2.getPassword())) {
+            System.out.println("테스트 실패 (password)");
+        }
+        else {
+            System.out.println("조회 테스트 성공");
+        }
 
     }
 }
