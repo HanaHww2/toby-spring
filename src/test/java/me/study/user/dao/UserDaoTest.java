@@ -1,28 +1,41 @@
 package me.study.user.dao;
 
-import me.study.user.dao.UserDaoWithDS;
 import me.study.user.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.sql.SQLException;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserDaoTest {
 
+    /*
+    * 픽스처 fixture : 테스트를 수행하는데 필요한 정보나 오브젝트
+    * 여러 테스트에서 반복적으로 사용하므로 로컬 변수가 아닌
+    * 인스턴스 변수로 두고, @BeforeEach 메소드를 이용해 생성해두면 편리하다.
+    * */
+    private UserDaoWithDS dao;
+    private User user1;
+    private User user2;
+    private User user3;
+
+    @BeforeEach
+    void setUp() {
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContextWithDS.xml");
+        this.dao = context.getBean("userDaoWithDS", UserDaoWithDS.class);
+
+        this.user1 = new User("test101", "하나", "password1");
+        this.user2 = new User("test102", "둘", "password2");
+        this.user3 = new User("test103", "셋", "password3");
+    }
+
     @Test
     void addAndGet() throws SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContextWithDS.xml");
-        UserDaoWithDS dao = context.getBean("userDaoWithDS", UserDaoWithDS.class);
-
-        User user1 = new User("test101", "하나", "password1");
-        User user2 = new User("test102", "둘", "password2");
 
         /*
         * 동일한 결과를 보장하는 테스트를 위해
@@ -55,12 +68,6 @@ public class UserDaoTest {
     * */
     @Test
     void count() throws SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContextWithDS.xml");
-        UserDaoWithDS dao = context.getBean("userDaoWithDS", UserDaoWithDS.class);
-
-        User user1 = new User("test101", "하나", "password1");
-        User user2 = new User("test102", "둘", "password2");
-        User user3 = new User("test103", "셋", "password3");
 
         dao.deleteAll();
 
@@ -79,9 +86,7 @@ public class UserDaoTest {
     * */
     @Test
     void getUserFailure() throws SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContextWithDS.xml");
 
-        UserDaoWithDS dao = context.getBean("userDaoWithDS", UserDaoWithDS.class);
         dao.deleteAll();
         assertThat(dao.getCount()).isEqualTo(0);
         // 메소드 실행 중 예외가 제대로 발생하는지 확인
