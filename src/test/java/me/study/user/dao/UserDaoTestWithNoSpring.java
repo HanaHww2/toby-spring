@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.annotation.DirtiesContext;
@@ -19,25 +18,13 @@ import java.sql.SQLException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/applicationContextWithDS.xml")
-// 해당 어노테이션이 붙은 클래스(혹은 메소드)에서 applicationContext 의 상태를 변경하는 것을 알려준다.
-// 강제로 변경된 applicationContext를 다른 클래스(메소드)에서 재사용, 공유하지 않는다.
-// applicationContext를 재생성해야 하므로 권장되지 않음
-@DirtiesContext
-/* 대신, 아래와 같이 test를 위한 applicationContextConfig 파일을 활용하는 것을 권장한다.
-@ContextConfiguration(locations = "/test-applicationContextWithDS.xml")*/
-public class UserDaoTest {
-
-    @Autowired
-    private ApplicationContext context;
+public class UserDaoTestWithNoSpring {
 
     /*
     * 픽스처 fixture : 테스트를 수행하는데 필요한 정보나 오브젝트
     * 여러 테스트에서 반복적으로 사용하므로 로컬 변수가 아닌
     * 인스턴스 변수로 두고, @BeforeEach 메소드를 이용해 생성해두면 편리하다.
     * */
-    @Autowired // DL 방식 대신 스프링 테스트 기능을 이용한 의존성 주입 방식
     private UserDaoWithDS dao;
     private User user1;
     private User user2;
@@ -45,16 +32,7 @@ public class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-//        ApplicationContext context = new GenericXmlApplicationContext("applicationContextWithDS.xml");
-        /*
-        * 셋업에서 컨텍스트를 생성하는 경우, 매 테스트마다 반복 수행하게 된다.
-        * 객체를 출력해보면 참조주소값이 다른 것을 확인할 수 있다.
-        * 그러나 Spring-test에서 제공하는 기능을 이용하면,
-        * application context를 미리 생성해두고,
-        * 테스트 클래스의 멤버 변수를 활용한 의존성 주입을 통해서
-        * 모든 테스트가 공유하도록 할 수 있다.
-        * */
-        System.out.println(context);
+
         /*
         * 매 시행마다 주소값이 다르다.
         * JUnit은 테스트 메소드를 실행할 때마다 새로운 테스트 오브젝트를 만들기 때문이다.
@@ -62,15 +40,17 @@ public class UserDaoTest {
         System.out.println(this);
 
         /*
-        // DL 방식으로 dao를 가져온다.
-        this.dao = context.getBean("userDaoWithDS", UserDaoWithDS.class);*/
-
+        * 스프링에서 제공하는 컨테이너(applicationContext)에 의존하지 않고,
+        * 직접 수동으로 DI를 수행한다.
+        * DataSource 객체를 만드는 번거로움은 있지만, 코드는 더 간단해진다.
+        * applicationContext가 만들어지는 시간도 절약된다.
+        * ""=> UserDao 코드가 애초에 스프링 API에 의존하지 않고 자신의 관심에만 집중한 코드이기에 가능한 방식이다.
+        * +) 스프링이 비침투적인 기술이기 때문이다.""
+        * */
+        this.dao = new UserDaoWithDS();
         // 테스트용 db 활용을 위해 새로운 dataSource 객체 생성
         DataSource dataSource = new SingleConnectionDataSource(
                 "jdbc:mysql://localhost/testdb", "root", "1234", true);
-        /*
-         * 해당 빈에 강제로 수정자를 이용한 DI를 수행해, applicationContext에 변경이 발생한다.
-         * */
         this.dao.setDataSource(dataSource);
 
         this.user1 = new User("test101", "하나", "password1");
