@@ -22,7 +22,6 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-
     public void add(User user) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
@@ -105,7 +104,13 @@ public class UserDao {
         PreparedStatement ps = null;
         try {
             c = dataSource.getConnection();
-            ps = c.prepareStatement("delete from users");
+            //ps = makeStatement(c);
+            /*
+            * 전략 패턴은 필요에 따라 컨텍스트는 유지하면서 전략을 바꾸어 쓸 수 있어야하지만,
+            * 이하의 코드에서는 구현체의 정보가 노출되어 있고, 정적으로 고정되어 있다.
+            * */
+            StatementStrategy strategy = new DeleteAllStatement();
+            ps = strategy.makePreparedStatement(c);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e; // 다시 메소드 밖으로 예외를 던진다.
@@ -162,5 +167,16 @@ public class UserDao {
             c.close();
         }
         return count;
+    }
+
+    /*
+    * 단순 메소드 추출 적용
+    * 여전히 반복되는 부분의 재사용은 불가능하다.
+    * 그다지 이득이 없어 보인다.
+    * -> 템플릿 메소드 패턴 활용 : 추상 클래스 생성
+    * */
+    private PreparedStatement makeStatement(Connection c) throws SQLException {
+        PreparedStatement ps = c.prepareStatement("delete from users");
+        return ps;
     }
 }
