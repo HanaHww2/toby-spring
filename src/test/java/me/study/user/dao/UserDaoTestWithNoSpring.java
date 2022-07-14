@@ -3,14 +3,8 @@ package me.study.user.dao;
 import me.study.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -25,7 +19,7 @@ public class UserDaoTestWithNoSpring {
     * 여러 테스트에서 반복적으로 사용하므로 로컬 변수가 아닌
     * 인스턴스 변수로 두고, @BeforeEach 메소드를 이용해 생성해두면 편리하다.
     * */
-    private UserDaoWithDS dao;
+    private UserDao dao;
     private User user1;
     private User user2;
     private User user3;
@@ -47,7 +41,7 @@ public class UserDaoTestWithNoSpring {
         * ""=> UserDao 코드가 애초에 스프링 API에 의존하지 않고 자신의 관심에만 집중한 코드이기에 가능한 방식이다.
         * +) 스프링이 비침투적인 기술이기 때문이다.""
         * */
-        this.dao = new UserDaoWithDS();
+        this.dao = new UserDao();
         // 테스트용 db 활용을 위해 새로운 dataSource 객체 생성
         DataSource dataSource = new SingleConnectionDataSource(
                 "jdbc:mysql://localhost/testdb", "root", "1234", true);

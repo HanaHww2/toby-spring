@@ -1,5 +1,6 @@
 package me.study;
 
+import me.study.user.dao.UserDao;
 import me.study.user.dao.UserDaoTest;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
@@ -23,7 +24,7 @@ public class TestStart {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(
                         selectPackage("me.study"),
-                        selectClass(UserDaoTest.class)
+                        selectClass(UserDao.class)
                 )
                 .filters(
                         includeClassNamePatterns(".*Test")

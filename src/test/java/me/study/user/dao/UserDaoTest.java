@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.test.annotation.DirtiesContext;
@@ -38,7 +37,7 @@ public class UserDaoTest {
     * 인스턴스 변수로 두고, @BeforeEach 메소드를 이용해 생성해두면 편리하다.
     * */
     @Autowired // DL 방식 대신 스프링 테스트 기능을 이용한 의존성 주입 방식
-    private UserDaoWithDS dao;
+    private UserDao dao;
     private User user1;
     private User user2;
     private User user3;
