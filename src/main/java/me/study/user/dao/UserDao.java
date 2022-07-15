@@ -18,10 +18,14 @@ public class UserDao {
      * 수정자 메소드 DI 방식 사용을 위한 수정자 메소드
      * */
     public void setDataSource(DataSource dataSource) {
+        this.jdbcContext = new JdbcContext(); // 클래스 생성과 초기화 제어권 위임, IoC 적용
+        this.jdbcContext.setDataSource(dataSource); // 의존 오브젝트 주입, 수동 DI 구현
+
         this.dataSource = dataSource;
     }
 
     private JdbcContext jdbcContext;
+
     /*
     * JdbcContext를 스프링 빈으로 등록해서 생성자 방식의 DI를 적용한다.
     * 하지만 JdbcContext는 추상화 된 인터페이스가 아닌 명확한 기능을 가진 구현체이므로,
@@ -29,7 +33,7 @@ public class UserDao {
     * 또한 스프링의 싱글톤으로 관리하게 되면, 여러 Dao에서 공유할 수 있다.
     * 해당 클래스 내부에서는 DataSource를 DI 받으므로 이를 위해서도 스프링 빈 등록이 필요하다.
      * */
-    public void setJdbcContext(JdbcContext jdbcContext) { this.jdbcContext = jdbcContext; }
+//    public void setJdbcContext(JdbcContext jdbcContext) { this.jdbcContext = jdbcContext; }
 
     /*
      * 컨텍스트(변하지 않는 부분)를 갖는 메소드
