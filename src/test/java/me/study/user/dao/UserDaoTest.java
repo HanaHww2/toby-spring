@@ -19,13 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/applicationContextWithDS.xml")
+//@ContextConfiguration(locations = "/applicationContext.xml")
 // 해당 어노테이션이 붙은 클래스(혹은 메소드)에서 applicationContext 의 상태를 변경하는 것을 알려준다.
 // 강제로 변경된 applicationContext를 다른 클래스(메소드)에서 재사용, 공유하지 않는다.
 // applicationContext를 재생성해야 하므로 권장되지 않음
-@DirtiesContext
-/* 대신, 아래와 같이 test를 위한 applicationContextConfig 파일을 활용하는 것을 권장한다.
-@ContextConfiguration(locations = "/test-applicationContextWithDS.xml")*/
+//@DirtiesContext
+/* 대신, 아래와 같이 test를 위한 applicationContextConfig 파일을 활용하는 것을 권장한다.*/
+@ContextConfiguration(locations = "/test-applicationContext.xml")
 public class UserDaoTest {
 
     @Autowired
@@ -44,7 +44,7 @@ public class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-//        ApplicationContext context = new GenericXmlApplicationContext("applicationContextWithDS.xml");
+//        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
         /*
         * 셋업에서 컨텍스트를 생성하는 경우, 매 테스트마다 반복 수행하게 된다.
         * 객체를 출력해보면 참조주소값이 다른 것을 확인할 수 있다.

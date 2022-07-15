@@ -13,12 +13,16 @@
         setDriverClass() 메소드의 파라미터 타입은 Class이므로, value에 전달된 텍스트 값을 오브젝트로 자동 변경한다.
         즉, 내부적으로 Class driverClass = Class.forName("com.mysql.cj.jdbc.Driver"); 와 같은 변환 과정을 거치는 것이다. -->
         <property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost/toby" />
+        <property name="url" value="jdbc:mysql://localhost/testdb" />
         <property name="username" value="root" />
         <property name="password" value="1234" />
     </bean>
 
     <bean id="userDao" class="me.study.user.dao.UserDao">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcContext" ref="jdbcContext" />
+    </bean>
+    <bean id="jdbcContext" class="me.study.user.dao.JdbcContext">
         <property name="dataSource" ref="dataSource" />
     </bean>
 </beans>

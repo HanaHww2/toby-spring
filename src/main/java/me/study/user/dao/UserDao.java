@@ -14,13 +14,22 @@ public class UserDao {
     * 자바에서 제공하는 DataSource 인터페이스를 활용하다
     * */
     private DataSource dataSource;
-
     /*
      * 수정자 메소드 DI 방식 사용을 위한 수정자 메소드
      * */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+
+    private JdbcContext jdbcContext;
+    /*
+    * JdbcContext를 스프링 빈으로 등록해서 생성자 방식의 DI를 적용한다.
+    * 하지만 JdbcContext는 추상화 된 인터페이스가 아닌 명확한 기능을 가진 구현체이므로,
+    * 온전한 DI라고 할 수는 없다. 다만 제어권을 외부로 넘기는 IoC가 적용된다.
+    * 또한 스프링의 싱글톤으로 관리하게 되면, 여러 Dao에서 공유할 수 있다.
+    * 해당 클래스 내부에서는 DataSource를 DI 받으므로 이를 위해서도 스프링 빈 등록이 필요하다.
+     * */
+    public void setJdbcContext(JdbcContext jdbcContext) { this.jdbcContext = jdbcContext; }
 
     /*
      * 컨텍스트(변하지 않는 부분)를 갖는 메소드
@@ -55,7 +64,8 @@ public class UserDao {
     public void deleteAll() throws SQLException {
         //StatementStrategy st = new DeleteAllStatement(); // 클라이언트 역할의 메소드가 실제 사용할 전략 클래스의 구현체(객체)를 생성
         // 컨텍스트 메소드를 호출하여 전략 오브젝트 전달
-        jdbcContextWithStatementStrategy(
+        //jdbcContextWithStatementStrategy(
+        this.jdbcContext.workWithStatementStrategy(
                 new StatementStrategy() {
                     @Override
                     public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
@@ -86,7 +96,8 @@ public class UserDao {
         }
         StatementStrategy st = new InnerAddStatement();
 
-        jdbcContextWithStatementStrategy(
+        //jdbcContextWithStatementStrategy(
+        this.jdbcContext.workWithStatementStrategy(
                 // 내부 클래스 선언보다도 익명 내부 클래스로 바로 선언과 동시에 구현체를 생성하여
                 // 매개변수로 전달하면, 더욱 간결하게 작성할 수 있다.
                 new StatementStrategy() {

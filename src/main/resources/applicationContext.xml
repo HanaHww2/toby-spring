@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
 
-    <bean id="connectionMaker" class="me.study.user.dao.DConnectionMaker" />
-    <bean id="userDao" class="me.study.user.dao.UserDao">
-          <property name="connectionMaker" ref="connectionMaker" />
+    <!-- DataSource 인터페이스를 활용한 빈 config -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <!-- 수정자를 이용해 다른 빈 오브젝트의 레퍼런스(ref)를 DI 하는 것이 아니라, 단순 정보/값(value)을 주입한다. -->
+        <!-- 성격은 다르지만, 이 또한 일종의 DI 라고 볼 수 있다. -->
+
+        <!-- value 속성은 텍스트 값을 전달한다.
+        그러나 스프링이 해당 값을 수정자 메소드의 파라미터 타입을 참고해서 적절한 형태로 변환해준다.
+        setDriverClass() 메소드의 파라미터 타입은 Class이므로, value에 전달된 텍스트 값을 오브젝트로 자동 변경한다.
+        즉, 내부적으로 Class driverClass = Class.forName("com.mysql.cj.jdbc.Driver"); 와 같은 변환 과정을 거치는 것이다. -->
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost/toby" />
+        <property name="username" value="root" />
+        <property name="password" value="1234" />
     </bean>
 
+    <bean id="userDao" class="me.study.user.dao.UserDao">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcContext" ref="jdbcContext" />
+    </bean>
+    <bean id="jdbcContext" class="me.study.user.dao.JdbcContext">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
 </beans>
