@@ -1,7 +1,6 @@
 package me.study;
 
 import me.study.user.dao.UserDao;
-import me.study.user.dao.UserDaoTest;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.LauncherSession;

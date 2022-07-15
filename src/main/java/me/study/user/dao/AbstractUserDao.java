@@ -1,7 +1,6 @@
 package me.study.user.dao;
 
 import me.study.user.domain.User;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
