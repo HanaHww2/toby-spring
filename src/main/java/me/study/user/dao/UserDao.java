@@ -65,42 +65,31 @@ public class UserDao {
         }
     }
 
-    public void deleteAll() throws SQLException {
-        //StatementStrategy st = new DeleteAllStatement(); // 클라이언트 역할의 메소드가 실제 사용할 전략 클래스의 구현체(객체)를 생성
-        // 컨텍스트 메소드를 호출하여 전략 오브젝트 전달
-        //jdbcContextWithStatementStrategy(
+    /*
+    * 재활용 가능하도록 변하지 않는 로직을 메소드로 분리
+    * */
+    private void executeSql(final String query) throws SQLException {
         this.jdbcContext.workWithStatementStrategy(
                 new StatementStrategy() {
                     @Override
                     public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                        PreparedStatement ps = c.prepareStatement("delete from users");
-                        return ps;
+                        return c.prepareStatement(query);
                     }
                 }
         );
     }
+
+    // 깔끔하고 단순해진 클라이언트 메소드
+    public void deleteAll() throws SQLException {
+        //executeSql("delete from users");
+        this.jdbcContext.executeSql("delete from users");
+    }
+
     public void add(final User user) throws SQLException {
         // 내부 클래스가 선언된 로컬의 매개변수(user)에 접근 가능하므로,
         // 내부 클래스의 user 멤버 변수와 이를 초기화해주는 생성자를 지울 수 있다.
         // 다만 final로 선언되어야 사용할 수 있으므로, 메소드의 매개변수에 이러한 제한자를 추가한다.
 
-        // 해당 메소드에서만 사용되는 클래스이므로
-        // 외부에 생성하기 보다는 메소드의 내부 클래스(로컬 클래스)로 생성해서 사용하는 것이 깔끔하다.
-        class InnerAddStatement implements StatementStrategy {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
-
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
-
-                return ps;
-            }
-        }
-        StatementStrategy st = new InnerAddStatement();
-
-        //jdbcContextWithStatementStrategy(
         this.jdbcContext.workWithStatementStrategy(
                 // 내부 클래스 선언보다도 익명 내부 클래스로 바로 선언과 동시에 구현체를 생성하여
                 // 매개변수로 전달하면, 더욱 간결하게 작성할 수 있다.

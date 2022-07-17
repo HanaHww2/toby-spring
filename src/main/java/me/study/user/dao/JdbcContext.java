@@ -5,6 +5,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/*
+* 결과적으로 해당 클래스 내에
+* 클라이언트, 템플릿, 콜백이 모두 공존하면서 함께 동작하는 구조가 되었다.
+* 이와 같이 하나의 목적을 위해 서로 긴밀하게 연관되어 동작하는 응집력 강한 코드는
+* 한군데 모아서 캡슐화하는 것이 유리하다.
+* 외부에는 꼭 필요한 기능을 제공하는 단순한 메소드만을 노출한다.
+* */
 public class JdbcContext {
 
     /*
@@ -48,4 +55,20 @@ public class JdbcContext {
             }
         }
     }
+
+    /*
+    * 모든 DAO에서 템플릿에 콜백 메소드를 전달하는
+    * 클라이언트 메소드를 활용할 수 있도록 템플릿 메소드를 가진 클래스로 이동
+    * */
+    public void executeSql(final String query) throws SQLException {
+        this.workWithStatementStrategy(
+                new StatementStrategy() {
+                    @Override
+                    public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+                        return c.prepareStatement(query);
+                    }
+                }
+        );
+    }
+
 }
