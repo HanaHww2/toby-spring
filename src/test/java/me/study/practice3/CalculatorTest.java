@@ -35,12 +35,18 @@ public class CalculatorTest {
 //        int sum = calc.clacSum(getClass().getResource("/numbers.txt").getPath());
 //        Assertions.assertThat(sum).isEqualTo(10);
 
-        Assertions.assertThat(calculator.clacSum(numFilepath)).isEqualTo(10);
+        //Assertions.assertThat(calculator.clacSum(numFilepath)).isEqualTo(10);
+        Assertions.assertThat(calculator.clacSumWithLine(this.numFilepath)).isEqualTo(10);
     }
 
     @Test
     void multiplyOfNumbers() throws IOException {
-        Assertions.assertThat(calculator.clacMultiply(numFilepath)).isEqualTo(24);
+        //Assertions.assertThat(calculator.clacMultiply(numFilepath)).isEqualTo(24);
+        Assertions.assertThat(calculator.clacMultiplyWithLine(this.numFilepath)).isEqualTo(24);
+    }
+    @Test
+    void concatenateStrings() throws IOException {
+        Assertions.assertThat(calculator.concatenate(this.numFilepath)).isEqualTo("1234");
     }
 }
 

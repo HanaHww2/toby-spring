@@ -4,18 +4,18 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Calculator {
+public class Calculator<T> {
 
     /*
      * 남아있던 반복되는 로직을 템플릿에 추가하는 리팩토링 작업
      * */
-    public Integer lineReadTemplate(String filepath, LineCallback callback, int initVal) throws IOException {
+    public <T> T lineReadTemplate(String filepath, LineCallback<T> callback, T initVal) throws IOException {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(filepath));
             // 버퍼의 각 라인을 읽는 동작을 템플릿에 추가
             String line = null;
-            Integer res = initVal;
+            T res = initVal;
             while ((line = br.readLine()) != null) {
                 // 콜백 객체에서는 순수한 계산 로직만 담당하도록 수정, 보완
                 // 코드의 관심사를 명확히 분리
@@ -63,7 +63,7 @@ public class Calculator {
     * 보완된 템플릿과 콜백을 활용하는 클라이언트 메소드
     * */
     public Integer clacSumWithLine(String filepath) throws IOException {
-        return this.lineReadTemplate(filepath, new LineCallback() { // 순수한 계산 로직만 갖는 구현체
+        return this.lineReadTemplate(filepath, new LineCallback<Integer>() { // 순수한 계산 로직만 갖는 구현체
             @Override
             public Integer doSomethingWithLine(String line, Integer value) {
                 return value + Integer.valueOf(line);
@@ -71,12 +71,20 @@ public class Calculator {
         }, 0);
     }
     public Integer clacMultiplyWithLine(String filepath) throws IOException  {
-        return this.lineReadTemplate(filepath, new LineCallback() {
+        return this.lineReadTemplate(filepath, new LineCallback<Integer>() {
             @Override
             public Integer doSomethingWithLine(String line, Integer value) {
                 return value * Integer.valueOf(line);
             }
         }, 1);
+    }
+    public String concatenate(String filepath) throws IOException  {
+        return this.lineReadTemplate(filepath, new LineCallback<String>() {
+            @Override
+            public String doSomethingWithLine(String line, String value) {
+                return value + line;
+            }
+        }, "");
     }
 
     /*
